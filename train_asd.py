@@ -1,6 +1,7 @@
 import argparse
 import warnings
 
+
 warnings.filterwarnings('ignore')
 
 import os
@@ -8,12 +9,13 @@ import random
 import numpy as np
 import pandas as pd
 import yaml
+import torch
+
 
 from utils.GPU import auto_gpu
 
 auto_gpu()
 
-import torch
 import torch.multiprocessing
 
 torch.multiprocessing.set_sharing_strategy('file_system')

@@ -2,7 +2,7 @@ training:
     batch_size: 64
     batch_size_val: 128
     num_workers: 12
-    n_epochs: 200
+    n_epochs: 40
     early_stop_patience: 200
     gradient_clip: 0.
     validation_interval: 1
@@ -44,3 +44,4 @@ represent:
     score_type: cosine
     pooling_type: avg
     domain_represent: False
+

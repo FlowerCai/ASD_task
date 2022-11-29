@@ -13,6 +13,7 @@ from utils.metric import batched_preds, compute_test_auc, compute_batch_anomaly_
 from utils.data_aug import mixup
 
 class ASDTask(pl.LightningModule):
+    # 初始化
     def __init__(
             self,
             hparams,
@@ -60,7 +61,7 @@ class ASDTask(pl.LightningModule):
                 wkwargs={"periodic": False}
             )
         elif self.hparams["feats"]["feature"] == "Mel":
-            self.mel_spec = MelSpectrogram(
+            self.feat_transform = MelSpectrogram(
                 sample_rate=feat_params["sample_rate"],
                 n_fft=feat_params["n_window"],
                 win_length=feat_params["n_window"],
@@ -139,8 +140,17 @@ class ASDTask(pl.LightningModule):
 
     def detect(self, mel_feats, label, model):
         return model(self.scaler(self.take_log(mel_feats)), label)
-
+    # 训练
     def training_step(self, batch, batch_idx):
+        """
+
+        Args:
+            batch: 从 train_dataloader 采样的一个batch的数据
+            batch_idx: 目前batch的索引
+
+        Returns: 返回要反向传播的loss
+
+        """
         if self.hparams["represent"]["domain_represent"]:
             audio, class_labels, domain_labels = batch
         else:
@@ -186,8 +196,17 @@ class ASDTask(pl.LightningModule):
         self.represent_embedding_dict = represent_extractor(embedding_list=self.embedding_list,
                                                             pooling_type=self.hparams["represent"]["pooling_type"],
                                                             domain_represent=self.hparams["represent"]["domain_represent"])
-
+    # 校验
     def validation_step(self, batch, batch_indx):
+        """
+
+        Args:
+            batch:
+            batch_indx:
+
+        Returns: 每1个epoch校验一次，即自动调用validation_step()函数
+                check_val_every_n_epoch=1
+        """
         if self.hparams["represent"]["domain_represent"]:
             audio, class_labels, anomaly_labels, domain_labels = batch
         else:
@@ -247,7 +266,7 @@ class ASDTask(pl.LightningModule):
         self.represent_embedding_dict = represent_extractor(embedding_list=self.embedding_list,
                                                             pooling_type=self.hparams["represent"]["pooling_type"],
                                                             domain_represent=self.hparams["represent"]["domain_represent"])
-
+    # 测试
     def test_step(self, batch, batch_indx):
         audio, class_labels, anomaly_labels, domain_labels, filenames = batch
 

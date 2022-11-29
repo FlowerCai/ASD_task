@@ -6,7 +6,6 @@ class TorchScaler(torch.nn.Module):
     """
     This torch module implements scaling for input tensors, both instance based
     and dataset-wide statistic based.
-
     Args:
         statistic: str, (default='dataset'), represent how to compute the statistic for normalisation.
             Choice in {'dataset', 'instance'}.
@@ -60,7 +59,6 @@ class TorchScaler(torch.nn.Module):
     def fit(self, dataloader, transform_func=lambda x: x[0]):
         """
         Scaler fitting
-
         Args:
             dataloader (DataLoader): training data DataLoader
             transform_func (lambda function, optional): Transforms applied to the data.
